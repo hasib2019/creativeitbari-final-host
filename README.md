@@ -49,3 +49,4 @@ This site is the central payment gateway for our other apps (ERP, client sites).
 5. Via Terminal/SSH: `composer install --no-dev -o`, `php artisan migrate --force --seed`, `php artisan storage:link`, `php artisan optimize`.
    Add the cron job `* * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1` (payment reconciliation).
 6. Submit `https://your-domain/sitemap.xml` in Google Search Console.
+# creativeitbari-final-host
