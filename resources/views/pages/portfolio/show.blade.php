@@ -41,9 +41,19 @@
             </div>
 
             @if ($gallery->isNotEmpty())
-                <div class="mt-14 grid gap-4 sm:grid-cols-2">
+                {{-- Full-page screenshots are tall: each sits in a browser frame and scrolls inside it. --}}
+                <div @class(['mt-14 grid gap-6', 'lg:grid-cols-2' => $gallery->count() > 1])>
                     @foreach ($gallery as $img)
-                        <img src="{{ media_url($img) }}" alt="{{ $item->title }} screenshot {{ $loop->iteration }}" class="w-full rounded-2xl border border-slate-200 object-cover dark:border-white/10" loading="lazy" width="800" height="500">
+                        <figure class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5 dark:border-white/10 dark:bg-ink-900" data-reveal>
+                            <div class="flex items-center gap-1.5 border-b border-slate-200 px-4 py-3 dark:border-white/10">
+                                <span class="size-3 rounded-full bg-accent-500"></span><span class="size-3 rounded-full bg-amber-400"></span><span class="size-3 rounded-full bg-emerald-400"></span>
+                                <span class="ml-3 flex-1 truncate rounded-md bg-slate-100 px-3 py-1 font-mono text-xs text-slate-500 dark:bg-white/5 dark:text-slate-400">{{ $item->project_url ? parse_url($item->project_url, PHP_URL_HOST) : $item->title }}</span>
+                                <span class="hidden font-mono text-[11px] text-slate-400 sm:inline">scroll ↓</span>
+                            </div>
+                            <div class="max-h-[38rem] overflow-y-auto">
+                                <img src="{{ media_url($img) }}" alt="{{ $item->title }} — full page" class="block w-full" loading="lazy" width="1000" height="1805">
+                            </div>
+                        </figure>
                     @endforeach
                 </div>
             @endif

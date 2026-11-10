@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Support\Fields;
 use App\Models\Setting;
+use App\Support\Favicon;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
@@ -22,6 +23,7 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 use UnitEnum;
 
 /**
@@ -101,12 +103,41 @@ class SiteSettings extends Page
         $data = $this->form->getState();
 
         Setting::setMany($data);
+        $this->refreshFavicon($data['favicon'] ?? null);
 
         Notification::make()
             ->success()
             ->title('Settings saved')
             ->body('Changes are live on the website.')
             ->send();
+    }
+
+    /**
+     * Build the tab, Apple and Android sizes and favicon.ico from the upload,
+     * once per new image. A broken file must not stop the rest saving.
+     */
+    private function refreshFavicon(?string $favicon): void
+    {
+        $set = Setting::get('favicon_set');
+
+        if (blank($favicon)) {
+            if ($set) {
+                Storage::disk('public')->deleteDirectory('settings/favicon');
+                Setting::setMany(['favicon_set' => null]);
+            }
+
+            return;
+        }
+
+        if (is_array($set) && ($set['source'] ?? null) === $favicon && Storage::disk('public')->exists(($set['dir'] ?? '').'/favicon-32.png')) {
+            return;
+        }
+
+        try {
+            Setting::setMany(['favicon_set' => ['source' => $favicon] + Favicon::generate($favicon)]);
+        } catch (\RuntimeException $e) {
+            Notification::make()->warning()->title('Favicon sizes not created')->body($e->getMessage())->send();
+        }
     }
 
     protected function getHeaderActions(): array
@@ -139,10 +170,7 @@ class SiteSettings extends Page
                             ->helperText('Shown on light backgrounds. 500×200 px (5:2), transparent PNG/WebP/SVG looks best.'),
                         Fields::logo('logo_dark', 'Logo (dark mode)')
                             ->helperText('White/light version for dark mode and the dark hero. 500×200 px (5:2).'),
-                        Fields::image('favicon', 'settings', 'Favicon')
-                            ->imageEditor(false)
-                            ->maxSize(1024)
-                            ->helperText('Square PNG, 512×512px recommended.'),
+                        Fields::favicon('favicon', 'Favicon'),
                     ])
                     ->columns(2),
                 Section::make('Currency')

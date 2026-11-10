@@ -89,7 +89,7 @@
 
     <meta name="theme-color" content="#0a0e19" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0a0e19" media="(prefers-color-scheme: dark)">
-    <link rel="icon" href="{{ media_url(setting('favicon'), asset('favicon.ico')) }}">
+    {!! \App\Support\Favicon::tags() !!}
     <link rel="alternate" type="application/rss+xml" title="{{ $siteName }} Blog" href="{{ route('blog.feed') }}">
 
     {{-- Apply saved / OS theme before first paint to avoid a light→dark flash --}}

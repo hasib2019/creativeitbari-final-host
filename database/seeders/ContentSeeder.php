@@ -3,10 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\BlogCategory;
-use App\Models\Client;
 use App\Models\Faq;
 use App\Models\Page;
-use App\Models\Portfolio;
 use App\Models\Post;
 use App\Models\Service;
 use App\Models\TeamMember;
@@ -40,23 +38,7 @@ class ContentSeeder extends Seeder
             ]);
         }
 
-        $portfolios = [
-            ['FreshMart Online Grocery', 'E-commerce', 'FreshMart BD', ['Laravel', 'Vue.js', 'bKash API']],
-            ['EduCare School Portal', 'Web Application', 'EduCare Academy', ['Laravel', 'Flutter', 'MySQL']],
-            ['MedLife Clinic System', 'Software', 'MedLife Diagnostic', ['Laravel', 'Livewire']],
-            ['TripNest Travel Booking', 'Web Application', 'TripNest Tours', ['Laravel', 'React']],
-            ['StyleHub Fashion Store', 'E-commerce', 'StyleHub', ['Laravel', 'Tailwind CSS']],
-            ['BuildPro Corporate Website', 'Website', 'BuildPro Engineering', ['Laravel', 'Alpine.js']],
-        ];
-        foreach ($portfolios as $i => [$title, $category, $client, $tech]) {
-            Portfolio::create([
-                'title' => $title, 'slug' => Str::slug($title), 'category' => $category, 'client_name' => $client,
-                'technologies' => $tech, 'completed_at' => now()->subMonths($i * 2 + 1),
-                'short_description' => "A {$category} project delivered for {$client}, focused on speed, usability and measurable business growth.",
-                'content' => "<h2>The challenge</h2><p>{$client} needed a modern, reliable platform to replace manual processes and reach more customers online.</p><h2>Our solution</h2><p>We designed and built a custom {$category} solution with an intuitive admin panel, mobile-first design and integrations with local payment and SMS gateways.</p><h2>The result</h2><p>Faster operations, happier customers and a platform ready to scale.</p>",
-                'is_featured' => $i < 3, 'sort_order' => $i,
-            ]);
-        }
+        // Portfolio and clients are real projects now: see ProjectSeeder.
 
         $testimonials = [
             ['Rafiq Ahmed', 'Owner', 'FreshMart BD', 'Our online grocery went live in three weeks. Orders, delivery and bKash payments all work flawlessly — sales doubled in the first quarter.'],
@@ -86,10 +68,6 @@ class ContentSeeder extends Seeder
 
         foreach ([['Founder Name', 'Founder & CEO'], ['Developer Name', 'Lead Developer'], ['Designer Name', 'Head of Design'], ['Support Name', 'Customer Success']] as $i => [$name, $designation]) {
             TeamMember::create(['name' => $name, 'designation' => $designation, 'sort_order' => $i, 'social_links' => []]);
-        }
-
-        foreach (['FreshMart', 'EduCare', 'MedLife', 'TripNest', 'StyleHub', 'BuildPro'] as $i => $name) {
-            Client::create(['name' => $name, 'sort_order' => $i]);
         }
 
         $pages = [

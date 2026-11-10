@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +15,8 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,
             CatalogSeeder::class,
             ContentSeeder::class,
+            // Real projects and clients; runs on every seed, adds only what is missing.
+            ProjectSeeder::class,
         ]);
     }
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DomainController;
+use App\Http\Controllers\FaviconController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HostingController;
 use App\Http\Controllers\InquiryController;
@@ -54,6 +55,10 @@ Route::match(['get', 'post'], '/pay/return/{attempt}/{result}', [CheckoutControl
 Route::get('/pay/{payment}', [CheckoutController::class, 'show'])->name('checkout.show');
 Route::post('/pay/{payment}', [CheckoutController::class, 'pay'])->middleware('throttle:10,1')->name('checkout.pay');
 Route::post('/pay/{payment}/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+
+// Favicon sizes and the web app manifest, generated from Site Settings → Favicon
+Route::get('/favicon.ico', [FaviconController::class, 'ico'])->name('favicon');
+Route::get('/site.webmanifest', [FaviconController::class, 'manifest'])->name('manifest');
 
 // SEO
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');

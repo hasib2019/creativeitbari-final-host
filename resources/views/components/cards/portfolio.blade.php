@@ -2,7 +2,7 @@
 <article class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-ink-900">
     <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-brand-100 to-cyan-100 dark:from-brand-950 dark:to-slate-900">
         @if ($item->thumbnail)
-            <img src="{{ media_url($item->thumbnail) }}" alt="{{ $item->title }}" loading="lazy" width="640" height="480" class="size-full object-cover transition duration-700 group-hover:scale-110">
+            <img src="{{ media_url($item->thumbnail) }}" alt="{{ $item->title }}" loading="lazy" width="640" height="480" class="size-full object-cover object-left-top transition duration-700 group-hover:scale-110">
         @else
             <div class="grid size-full place-items-center"><x-icon name="heroicon-o-photo" class="size-16 text-brand-400/60" /></div>
         @endif

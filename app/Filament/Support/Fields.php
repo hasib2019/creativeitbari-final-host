@@ -4,13 +4,15 @@ namespace App\Filament\Support;
 
 use App\Support\Icons;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Field;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -129,7 +131,7 @@ class Fields
             ]);
     }
 
-    /** @return array<\Filament\Schemas\Components\Component|\Filament\Forms\Components\Field> */
+    /** @return array<Component|Field> */
     public static function visibility(bool $featured = false): array
     {
         return array_values(array_filter([
@@ -148,12 +150,31 @@ class Fields
     {
         return self::image($name, 'settings', $label)
             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
-            ->imageEditorAspectRatios(['5:2', null])
-            ->imageResizeMode('contain')
-            ->imageResizeTargetWidth('500')
-            ->imageResizeTargetHeight('200')
-            ->imageResizeUpscale(false)
+            ->imageEditorAspectRatioOptions(['5:2', null])
+            ->automaticallyResizeImagesMode('contain')
+            ->automaticallyResizeImagesToWidth('500')
+            ->automaticallyResizeImagesToHeight('200')
+            ->automaticallyUpscaleImagesWhenResizing(false)
             ->maxSize(2048);
+    }
+
+    /**
+     * The site icon. Cropped to a square and scaled to 512×512 in the browser
+     * before upload (the editor opens on 1:1 to choose the crop); on save,
+     * App\Support\Favicon makes the 16/32/48/180/192 px sizes and favicon.ico.
+     */
+    public static function favicon(string $name, string $label): FileUpload
+    {
+        return self::image($name, 'settings', $label)
+            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+            ->imageAspectRatio('1:1')
+            ->automaticallyCropImagesToAspectRatio()
+            ->imageEditorAspectRatioOptions(['1:1'])
+            ->automaticallyResizeImagesMode('cover')
+            ->automaticallyResizeImagesToWidth('512')
+            ->automaticallyResizeImagesToHeight('512')
+            ->maxSize(2048)
+            ->helperText('Any PNG, JPG or WebP — it is cropped to a square and resized to 512×512 automatically (use the pencil to choose the crop). Browser-tab, iPhone and Android sizes and favicon.ico are made from it on save. A transparent PNG looks best.');
     }
 
     public static function imageColumn(string $name, bool $circular = false): ImageColumn

@@ -35,7 +35,7 @@ class FrontendTest extends TestCase
             'hosting' => ['/hosting'],
             'domains' => ['/domains'],
             'portfolio' => ['/portfolio'],
-            'portfolio item' => ['/portfolio/freshmart-online-grocery'],
+            'portfolio item' => ['/portfolio/metrobox-bangladesh'],
             'blog' => ['/blog'],
             'blog category' => ['/blog/category/e-commerce'],
             'blog search' => ['/blog?q=hosting'],

@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Widgets\LatestInquiries;
 use App\Filament\Widgets\PaymentStats;
 use App\Filament\Widgets\StatsOverview;
+use App\Support\Favicon;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -36,7 +37,7 @@ class AdminPanelProvider extends PanelProvider
             ->profile(isSimple: false)
             // Closures so settings are read per request, not at boot.
             ->brandName(fn (): string => (string) setting('site_name', 'CreativeItBari'))
-            ->favicon(fn (): ?string => media_url(setting('favicon')))
+            ->favicon(fn (): ?string => Favicon::url('favicon-32.png') ?? media_url(setting('favicon')))
             ->colors([
                 'primary' => Color::Indigo,
                 'gray' => Color::Slate,
