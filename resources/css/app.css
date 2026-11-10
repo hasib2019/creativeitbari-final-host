@@ -1,0 +1,426 @@
+@import '@fontsource-variable/plus-jakarta-sans';
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+@source '../js/**/*.js';
+@source '../../app/Support/**/*.php';
+
+/* Animatable angle for the terminal's rotating border. */
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+/* Dark mode is class-based so the visitor's choice (toggle) wins over the OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+
+    /* Brand = the logo's cyan ("T"), accent = its red ("I" and the roof), ink = its navy. */
+    --color-brand-50: oklch(97.6% 0.02 205);
+    --color-brand-100: oklch(94.6% 0.045 206);
+    --color-brand-200: oklch(89.5% 0.08 207);
+    --color-brand-300: oklch(83% 0.11 208);
+    --color-brand-400: oklch(76.5% 0.13 210);
+    --color-brand-500: oklch(70.5% 0.13 212);
+    --color-brand-600: oklch(59% 0.115 215);
+    --color-brand-700: oklch(51% 0.1 218);
+    --color-brand-800: oklch(43% 0.085 220);
+    --color-brand-900: oklch(37% 0.07 222);
+    --color-brand-950: oklch(27% 0.05 225);
+
+    --color-accent-50: oklch(97% 0.015 17);
+    --color-accent-100: oklch(94% 0.032 17);
+    --color-accent-200: oklch(88.5% 0.062 18);
+    --color-accent-300: oklch(81% 0.11 19);
+    --color-accent-400: oklch(71.5% 0.18 21);
+    --color-accent-500: oklch(63% 0.22 23);
+    --color-accent-600: oklch(57% 0.22 25);
+    --color-accent-700: oklch(50% 0.19 25);
+    --color-accent-800: oklch(43% 0.16 25);
+    --color-accent-900: oklch(38% 0.13 24);
+    --color-accent-950: oklch(26% 0.09 24);
+
+    --color-ink-700: #1c2740;
+    --color-ink-800: #141c2f;
+    --color-ink-900: #0e1424;
+    --color-ink-950: #0a0e19;
+
+    --animate-marquee: marquee 40s linear infinite;
+    --animate-float: float 6s ease-in-out infinite;
+    --animate-blink: blink 1s step-end infinite;
+    --animate-spin-slow: spin 28s linear infinite;
+    --animate-spin-reverse: spin-reverse 40s linear infinite;
+
+    @keyframes marquee {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+
+    @keyframes spin-reverse {
+        to { transform: rotate(-360deg); }
+    }
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        @apply bg-white text-slate-700 antialiased dark:bg-ink-950 dark:text-slate-300;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply text-slate-900 dark:text-white;
+    }
+
+    ::selection {
+        @apply bg-brand-500/30;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+@layer components {
+    .container-x {
+        @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    }
+
+    .section {
+        @apply relative py-16 sm:py-20 lg:py-24;
+    }
+
+    .section-alt {
+        @apply bg-slate-50 dark:bg-ink-900/60;
+    }
+
+    /* "I" red to "T" cyan, as in the logo. */
+    .gradient-text {
+        @apply bg-gradient-to-r from-accent-500 via-fuchsia-500 to-brand-500 bg-clip-text text-transparent dark:from-accent-400 dark:via-fuchsia-400 dark:to-brand-400;
+    }
+
+    .btn, .btn-primary, .btn-outline, .btn-ghost {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 disabled:cursor-not-allowed disabled:opacity-60;
+    }
+
+    .btn-primary {
+        @apply relative overflow-hidden bg-gradient-to-r from-accent-600 to-accent-500 text-white shadow-lg shadow-accent-600/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent-600/40;
+    }
+
+    /* A light sweep across the primary button on hover. */
+    .btn-primary::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.35) 50%, transparent 70%);
+        transform: translateX(-120%);
+        transition: transform 0.6s ease;
+    }
+
+    .btn-primary:hover::after {
+        transform: translateX(120%);
+    }
+
+    .btn-outline {
+        @apply border border-slate-300 bg-white/60 text-slate-800 backdrop-blur hover:border-brand-500 hover:text-brand-700 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:border-brand-400 dark:hover:text-brand-300;
+    }
+
+    .btn-ghost {
+        @apply px-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white;
+    }
+
+    .card, .card-hover {
+        @apply rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 dark:border-white/10 dark:bg-ink-900/70;
+    }
+
+    .card-hover {
+        @apply relative isolate hover:-translate-y-1 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-600/10 dark:hover:border-brand-500/40;
+    }
+
+    /* Spotlight that follows the pointer across a card (--mx/--my set in spotlight.js). */
+    .card-hover::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(19 181 203 / 0.12), transparent 45%);
+    }
+
+    .card-hover:hover::before {
+        opacity: 1;
+    }
+
+    .badge, .badge-brand {
+        @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+    }
+
+    .badge-brand {
+        @apply bg-brand-50 font-mono text-brand-700 ring-1 ring-brand-600/20 dark:bg-brand-500/10 dark:text-brand-300 dark:ring-brand-400/25;
+    }
+
+    .input {
+        @apply block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 focus:outline-none dark:border-white/10 dark:bg-ink-900 dark:text-white dark:placeholder-slate-500;
+    }
+
+    .label {
+        @apply mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300;
+    }
+
+    .nav-link {
+        @apply inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-white;
+    }
+
+    .nav-link-active {
+        @apply text-brand-600 dark:text-white;
+    }
+
+    .bg-grid {
+        background-image:
+            linear-gradient(to right, rgb(148 163 184 / 0.12) 1px, transparent 1px),
+            linear-gradient(to bottom, rgb(148 163 184 / 0.12) 1px, transparent 1px);
+        background-size: 44px 44px;
+    }
+
+    /* ── The dark "IT" hero ─────────────────────────────────────────── */
+
+    .tech-hero {
+        @apply relative isolate overflow-hidden bg-ink-950 text-slate-300;
+    }
+
+    /* Neon grid floor moving towards the viewer. */
+    .grid-floor {
+        position: absolute;
+        left: -50%;
+        right: -50%;
+        bottom: -2px;
+        height: 55%;
+        background-image:
+            linear-gradient(rgb(19 181 203 / 0.28) 1px, transparent 1px),
+            linear-gradient(90deg, rgb(19 181 203 / 0.28) 1px, transparent 1px);
+        background-size: 64px 64px;
+        transform: perspective(420px) rotateX(62deg);
+        transform-origin: center top;
+        mask-image: linear-gradient(to top, black 10%, transparent 85%);
+        animation: grid-move 2.8s linear infinite;
+    }
+
+    @keyframes grid-move {
+        to { background-position: 0 64px; }
+    }
+
+    /* A thin light line sweeping down the hero, like a scanner. */
+    .scan-line {
+        position: absolute;
+        inset-inline: 0;
+        top: 0;
+        height: 160px;
+        background: linear-gradient(to bottom, transparent, rgb(19 181 203 / 0.08) 85%, rgb(19 181 203 / 0.35));
+        animation: scan 7s ease-in-out infinite;
+    }
+
+    @keyframes scan {
+        0% { transform: translateY(-180px); opacity: 0; }
+        15% { opacity: 1; }
+        85% { opacity: 1; }
+        100% { transform: translateY(110vh); opacity: 0; }
+    }
+
+    /* Code glyphs drifting up the hero. */
+    .glyph {
+        position: absolute;
+        bottom: -40px;
+        font-family: var(--font-mono);
+        font-weight: 700;
+        user-select: none;
+        animation: glyph-rise var(--d, 14s) linear infinite;
+        animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes glyph-rise {
+        0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+        10% { opacity: var(--o, 0.35); }
+        90% { opacity: var(--o, 0.35); }
+        100% { transform: translateY(-115vh) rotate(var(--r, 25deg)); opacity: 0; }
+    }
+
+    /* Blurred colour orbs drifting slowly behind everything. */
+    .orb {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(70px);
+        animation: orb-drift 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes orb-drift {
+        from { transform: translate(0, 0) scale(1); }
+        to { transform: translate(60px, 40px) scale(1.15); }
+    }
+
+    /* Terminal window. */
+    .terminal {
+        @apply relative overflow-hidden rounded-2xl border border-white/10 bg-ink-900/85 shadow-2xl shadow-black/50 backdrop-blur-xl;
+    }
+
+    .terminal::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        z-index: -1;
+        border-radius: inherit;
+        padding: 1px;
+        background: conic-gradient(from var(--angle, 0deg), transparent 0 70%, rgb(229 35 60 / 0.9), rgb(19 181 203 / 0.9), transparent);
+        animation: border-spin 6s linear infinite;
+        mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        mask-composite: exclude;
+    }
+
+    @keyframes border-spin {
+        to { --angle: 360deg; }
+    }
+
+    .caret {
+        @apply ml-0.5 inline-block h-[0.9em] w-[0.08em] translate-y-[0.08em] animate-blink rounded-sm bg-brand-400 align-baseline;
+    }
+
+    /* Circuit-board traces with data pulses running along them (circuit-bg component). */
+    .circuit-pulse {
+        stroke-dasharray: 14 220;
+        animation: circuit-flow var(--d, 6s) linear infinite;
+        animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes circuit-flow {
+        from { stroke-dashoffset: 234; }
+        to { stroke-dashoffset: 0; }
+    }
+
+    /* ── Scroll reveal (reveal.js adds .is-visible) ─────────────────── */
+
+    .reveal-ready [data-reveal] {
+        opacity: 0;
+        transform: translateY(26px);
+        transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+        transition-delay: var(--reveal-delay, 0s);
+    }
+
+    .reveal-ready [data-reveal].is-visible {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* ── Custom cursor (cursor.js) ──────────────────────────────────── */
+
+    .has-custom-cursor,
+    .has-custom-cursor * {
+        cursor: none !important;
+    }
+
+    .has-custom-cursor :is(input:not([type='checkbox'], [type='radio'], [type='range'], [type='submit'], [type='button']), textarea, [contenteditable='true']) {
+        cursor: text !important;
+    }
+
+    .cursor-trail {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        pointer-events: none;
+    }
+
+    .cursor-dot,
+    .cursor-ring {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        pointer-events: none;
+        border-radius: 9999px;
+        will-change: transform;
+    }
+
+    .cursor-dot {
+        width: 8px;
+        height: 8px;
+        margin: -4px 0 0 -4px;
+        background: #13b5cb;
+        box-shadow: 0 0 12px 2px rgb(19 181 203 / 0.8);
+        transition: width 0.2s, height 0.2s, margin 0.2s, background 0.2s, opacity 0.2s;
+    }
+
+    .cursor-ring {
+        width: 34px;
+        height: 34px;
+        margin: -17px 0 0 -17px;
+        border: 1.5px solid rgb(19 181 203 / 0.55);
+        transition: width 0.25s, height 0.25s, margin 0.25s, border-color 0.25s, background 0.25s, opacity 0.2s;
+    }
+
+    .cursor-hover .cursor-ring {
+        width: 58px;
+        height: 58px;
+        margin: -29px 0 0 -29px;
+        border-color: rgb(229 35 60 / 0.8);
+        background: rgb(229 35 60 / 0.08);
+    }
+
+    .cursor-hover .cursor-dot {
+        background: #e5233c;
+        box-shadow: 0 0 14px 3px rgb(229 35 60 / 0.75);
+    }
+
+    .cursor-down .cursor-ring {
+        width: 24px;
+        height: 24px;
+        margin: -12px 0 0 -12px;
+    }
+
+    .cursor-text .cursor-dot,
+    .cursor-text .cursor-ring,
+    .cursor-hidden .cursor-dot,
+    .cursor-hidden .cursor-ring {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .grid-floor,
+    .scan-line,
+    .glyph,
+    .orb,
+    .terminal::before,
+    .circuit-pulse {
+        animation: none !important;
+    }
+
+    .glyph,
+    .scan-line {
+        display: none;
+    }
+
+    .reveal-ready [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

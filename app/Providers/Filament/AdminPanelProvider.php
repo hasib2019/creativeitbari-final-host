@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Providers\Filament;
+
+use App\Filament\Widgets\LatestInquiries;
+use App\Filament\Widgets\PaymentStats;
+use App\Filament\Widgets\StatsOverview;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\AuthenticateSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
+use Filament\Pages\Dashboard;
+use Filament\Panel;
+use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\Widgets\AccountWidget;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+
+class AdminPanelProvider extends PanelProvider
+{
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            ->default()
+            ->id('admin')
+            ->path('admin')
+            ->login()
+            ->passwordReset()
+            ->profile(isSimple: false)
+            // Closures so settings are read per request, not at boot.
+            ->brandName(fn (): string => (string) setting('site_name', 'CreativeItBari'))
+            ->favicon(fn (): ?string => media_url(setting('favicon')))
+            ->colors([
+                'primary' => Color::Indigo,
+                'gray' => Color::Slate,
+            ])
+            ->sidebarCollapsibleOnDesktop()
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+            ->databaseTransactions()
+            ->navigationGroups([
+                NavigationGroup::make('Catalog'),
+                NavigationGroup::make('Content'),
+                NavigationGroup::make('Blog'),
+                NavigationGroup::make('Leads'),
+                NavigationGroup::make('Payments'),
+                NavigationGroup::make('Settings')->collapsed(),
+            ])
+            ->navigationItems([
+                NavigationItem::make('View Website')
+                    ->url(fn (): string => url('/'), shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-globe-alt')
+                    ->sort(-10),
+            ])
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+            ->pages([
+                Dashboard::class,
+            ])
+            ->widgets([
+                PaymentStats::class,
+                StatsOverview::class,
+                LatestInquiries::class,
+                AccountWidget::class,
+            ])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                PreventRequestForgery::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Authenticate::class,
+            ]);
+    }
+}
